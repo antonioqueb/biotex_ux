@@ -24,7 +24,7 @@ class UxDashboard(models.TransientModel):
         # 2. tiempo solicitud -> OC (horas)
         POL = env['purchase.order']
         pos = POL.search([('biotex_request_id', 'in', reqs.ids), ('state', 'in', ('purchase', 'done'))])
-        durations = [(po.date_approve - po.biotex_request_id.create_date).total_seconds() / 3600 for po in pos if po.date_approve and po.biotex_request_id.create_date]
+        durations = [max((po.date_approve - po.biotex_request_id.create_date).total_seconds() / 3600, 0) for po in pos if po.date_approve and po.biotex_request_id.create_date]
         avg_hours = sum(durations) / len(durations) if durations else 0
         # 3. urgentes
         urgent = len(reqs.filtered(lambda r: r.priority == '1'))
@@ -67,7 +67,7 @@ class UxDashboard(models.TransientModel):
         for po in pos:
             wh = po.biotex_warehouse_id.name or '-'
             if po.date_approve and po.biotex_request_id.create_date:
-                by_wh.setdefault(wh, []).append((po.date_approve - po.biotex_request_id.create_date).total_seconds() / 3600)
+                by_wh.setdefault(wh, []).append(max((po.date_approve - po.biotex_request_id.create_date).total_seconds() / 3600, 0))
         contracts = Contract.search([('state', '=', 'active')], order='progress desc', limit=10)
         # tendencia mensual de precio vs promedio (6 meses)
         trend = []

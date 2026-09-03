@@ -16,6 +16,13 @@
         <field name="model">biotex.purchase.request</field>
         <field name="inherit_id" ref="biotex_purchase_request.view_request_kanban"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='priority']" position="after">
+                <field name="state"/>
+                <field name="date_needed"/>
+                <field name="contract_id"/>
+                <field name="partner_id"/>
+                <field name="ux_late"/>
+            </xpath>
             <xpath expr="//t[@t-name='card']" position="replace">
                 <t t-name="card">
                     <div class="ux-kcard">
@@ -31,7 +38,7 @@
                         </div>
                         <field name="progress" widget="progressbar" options="{'editable': false}"/>
                         <div class="ux-kcard__top">
-                            <span class="ux-kcard__age" t-att-class="{'ux-kcard__age--late': record.date_needed.raw_value and new Date(record.date_needed.raw_value) &lt; new Date() and !['received','cancelled'].includes(record.state.raw_value)}">
+                            <span class="ux-kcard__age" t-att-class="{'ux-kcard__age--late': record.ux_late.raw_value}">
                                 <t t-if="record.date_needed.raw_value">Requerida <field name="date_needed"/></t>
                             </span>
                             <field name="requester_id" widget="many2one_avatar_user"/>

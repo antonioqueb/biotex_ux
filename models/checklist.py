@@ -13,6 +13,13 @@ class PurchaseRequest(models.Model):
     _inherit = 'biotex.purchase.request'
 
     ux_checklist = fields.Json(compute='_compute_ux_checklist')
+    ux_late = fields.Boolean(compute='_compute_ux_late', string='Fecha requerida vencida')
+
+    @api.depends('date_needed', 'state')
+    def _compute_ux_late(self):
+        today = fields.Date.context_today(self)
+        for r in self:
+            r.ux_late = bool(r.date_needed and r.date_needed < today and r.state not in ('received', 'cancelled'))
 
     @api.depends('support_type', 'contract_id', 'contract_id.state', 'contract_id.amount_remaining', 'support_ref', 'partner_id',
                  'line_ids.product_id', 'line_ids.image', 'line_ids.product_qty', 'line_ids.stock_elsewhere_qty', 'line_ids.suggested_supplier_ids',

@@ -20,6 +20,11 @@
 
 .tabular { font-variant-numeric: tabular-nums; }
 
+// Widgets JSON propios colocados fuera de <group>: ancho completo de la hoja.
+.o_field_widget.o_field_biotex_checklist,
+.o_field_widget.o_field_biotex_contract_keys,
+.o_field_widget.o_field_biotex_stock_matrix { display: block; width: 100%; }
+
 // ---------- píldoras de estado (mismo lenguaje en todo el sistema) ----------
 .ux-pill {
     display: inline-flex; align-items: center; gap: .3em; padding: .1em .55em; border-radius: 999px;

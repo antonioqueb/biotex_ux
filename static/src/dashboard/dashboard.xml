@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="biotex_ux.Dashboard">
-        <div class="ux-dash o_action">
+        <div class="o_action ux-dash-root d-flex flex-column h-100">
+          <div class="ux-dash overflow-auto flex-grow-1">
             <div class="ux-dash__head">
                 <div>
                     <h3 class="ux-dash__title">Tablero de operación</h3>
@@ -70,6 +71,7 @@
                     </section>
                 </div>
             </t>
+          </div>
         </div>
     </t>
 </templates>

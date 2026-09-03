@@ -90,8 +90,9 @@
 .ux-bar--none { background: var(--ux-muted); }
 
 // ---------- tablero ----------
+.ux-dash-root { min-height: 0; overflow: hidden; }
 .ux-dash {
-    padding: 16px 20px 32px; overflow: auto; flex: 1 1 auto; min-height: 0; width: 100%;
+    padding: 16px 20px 32px; min-height: 0;
     &__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
     &__title { margin: 0; font-weight: 700; }
     &__sub { color: var(--ux-muted); font-size: .85rem; }

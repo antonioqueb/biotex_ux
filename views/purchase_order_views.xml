@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_order_form_ux" model="ir.ui.view">
+        <field name="name">purchase.order.form.ux</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="biotex_purchase.view_purchase_order_form_biotex"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <field name="ux_checklist" widget="biotex_checklist" nolabel="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

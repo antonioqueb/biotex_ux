@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_contract_form_ux" model="ir.ui.view">
+        <field name="name">biotex.contract.form.ux</field>
+        <field name="model">biotex.contract</field>
+        <field name="inherit_id" ref="biotex_contract.view_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <field name="ux_checklist" widget="biotex_checklist" nolabel="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

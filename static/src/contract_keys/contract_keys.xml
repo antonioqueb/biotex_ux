@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="biotex_ux.ContractKeys">
+        <div class="ux-keys" t-if="data.keys.length">
+            <div class="ux-keys__head">
+                <div>
+                    <div class="ux-keys__title"><i class="fa fa-key me-1"/>Claves del contrato</div>
+                    <div class="ux-keys__sub">Las claves cuyo producto coincide con lo entregado aparecen primero. Un clic las agrega a la máscara con la cantidad sugerida.</div>
+                </div>
+                <input type="search" class="form-control form-control-sm ux-keys__search" placeholder="Buscar clave, descripción o producto" t-att-value="state.filter" t-on-input="(ev) => state.filter = ev.target.value"/>
+            </div>
+            <div class="ux-keys__table">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Clave</th><th>Descripción</th><th class="text-end">Contratado</th><th class="text-end">Pendiente</th>
+                            <th style="width:120px">Avance</th><th class="text-end">Precio</th><th class="text-end">Saldo</th><th class="text-end">En esta</th><th/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="keys" t-as="k" t-key="k.id" t-att-class="{ 'ux-keys__match': k.matches_line, 'ux-keys__done': k.remaining lte 0 }">
+                            <td class="fw-bold text-nowrap"><t t-esc="k.code"/></td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 320px" t-att-title="k.name" t-esc="k.name"/>
+                                <small class="text-muted" t-if="k.product"><i t-if="k.matches_line" class="fa fa-link me-1 text-success" title="Producto entregado en esta remisión"/><t t-esc="k.product"/></small>
+                            </td>
+                            <td class="text-end tabular" t-esc="k.qty"/>
+                            <td class="text-end tabular" t-att-class="{ 'text-danger fw-bold': k.remaining lte 0 }" t-esc="k.remaining"/>
+                            <td><div class="progress ux-progress"><div class="progress-bar" t-att-class="pct(k) >= 100 ? 'bg-success' : 'bg-info'" t-attf-style="width: {{pct(k)}}%"/></div></td>
+                            <td class="text-end tabular" t-esc="money(k.price)"/>
+                            <td class="text-end tabular" t-esc="money(k.amount_remaining)"/>
+                            <td class="text-end tabular" t-att-class="{ 'fw-bold text-primary': k.in_this }" t-esc="k.in_this || ''"/>
+                            <td class="text-end">
+                                <button t-if="data.editable" class="btn btn-sm" t-att-class="k.matches_line ? 'btn-primary' : 'btn-outline-secondary'" t-att-disabled="state.busy" t-on-click="() => this.use(k)" t-att-title="'Cobrar ' + (k.suggest_qty || k.remaining) + ' con esta clave'">
+                                    <i class="fa fa-plus"/> <t t-esc="k.suggest_qty || ''"/>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="biotex_ux.StockMatrix">
+        <div class="ux-matrix">
+            <div class="ux-matrix__summary">
+                <div><span class="ux-matrix__big" t-esc="data.total"/><span class="ux-matrix__unit"> <t t-esc="data.uom"/> en mano</span></div>
+                <div><span class="ux-matrix__big" t-esc="data.free_total"/><span class="ux-matrix__unit"> disponibles</span></div>
+                <span t-if="data.high_rotation" class="ux-pill ux-pill--info"><i class="fa fa-bolt"/> alta rotación</span>
+                <span class="ux-matrix__legend">
+                    <span><i class="ux-dot ux-bar--low"/> bajo mínimo</span>
+                    <span><i class="ux-dot ux-bar--ok"/> en rango</span>
+                    <span><i class="ux-dot ux-bar--high"/> sobre máximo</span>
+                    <span><i class="ux-dot ux-bar--none"/> sin regla</span>
+                </span>
+            </div>
+            <table class="table table-sm ux-matrix__table mb-0">
+                <thead><tr><th>Delegación</th><th style="width:38%">Existencia</th><th class="text-end">En mano</th><th class="text-end">Disponible</th><th class="text-end">Por llegar</th><th class="text-end">Por salir</th><th class="text-end">Mín / Máx</th><th/></tr></thead>
+                <tbody>
+                    <tr t-foreach="data.rows" t-as="r" t-key="r.id">
+                        <td class="text-nowrap"><i t-if="r.central" class="fa fa-star text-warning me-1" title="Almacén central"/><t t-esc="r.name"/> <small class="text-muted" t-esc="r.company"/></td>
+                        <td>
+                            <div class="ux-bar" t-att-title="statusMeta(r).label">
+                                <div t-att-class="'ux-bar__fill ' + statusMeta(r).cls" t-attf-style="width: {{barWidth(r)}}%"/>
+                                <div t-if="r.min !== null and r.min !== undefined and r.min > 0" class="ux-bar__min" t-attf-style="left: {{Math.min(100, r.min / max * 100)}}%" title="Mínimo"/>
+                            </div>
+                        </td>
+                        <td class="text-end tabular fw-bold" t-esc="r.qty"/>
+                        <td class="text-end tabular" t-esc="r.free"/>
+                        <td class="text-end tabular text-success" t-esc="r.incoming || ''"/>
+                        <td class="text-end tabular text-danger" t-esc="r.outgoing || ''"/>
+                        <td class="text-end tabular text-muted"><t t-if="r.min !== null and r.min !== undefined"><t t-esc="r.min"/> / <t t-esc="r.max"/></t><t t-else="">—</t></td>
+                        <td class="text-end"><button class="btn btn-link btn-sm p-0" t-on-click="() => this.openQuants(r)" title="Ver ubicaciones"><i class="fa fa-search"/></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </t>
+</templates>

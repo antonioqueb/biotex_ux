@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="biotex_ux.Checklist">
+        <div class="ux-checklist" t-att-class="overall.cls" t-if="items.length">
+            <div class="ux-checklist__bar" role="button" t-on-click="toggle" t-att-aria-expanded="state.open">
+                <i t-att-class="'fa ' + overall.icon + ' ux-checklist__icon'"/>
+                <span class="ux-checklist__title" t-esc="overall.text"/>
+                <span class="ux-checklist__counts">
+                    <span t-if="counts.error" class="ux-pill ux-pill--error"><i class="fa fa-times-circle"/> <t t-esc="counts.error"/></span>
+                    <span t-if="counts.warn" class="ux-pill ux-pill--warn"><i class="fa fa-exclamation-triangle"/> <t t-esc="counts.warn"/></span>
+                    <span class="ux-pill ux-pill--ok"><i class="fa fa-check-circle"/> <t t-esc="counts.ok"/></span>
+                </span>
+                <i t-att-class="'fa ux-checklist__chevron ' + (state.open ? 'fa-chevron-up' : 'fa-chevron-down')"/>
+            </div>
+            <ul class="ux-checklist__items" t-if="state.open">
+                <li t-foreach="items" t-as="it" t-key="it.key" t-att-class="'ux-checklist__item ' + meta(it.state).cls">
+                    <i t-att-class="'fa ' + meta(it.state).icon" t-att-title="meta(it.state).label"/>
+                    <div class="ux-checklist__text">
+                        <div class="ux-checklist__label" t-esc="it.label"/>
+                        <div t-if="it.hint" class="ux-checklist__hint" t-esc="it.hint"/>
+                    </div>
+                    <button t-if="it.action" class="btn btn-link btn-sm ux-checklist__go" t-on-click.stop="() => this.go(it)">Abrir <i class="fa fa-external-link"/></button>
+                </li>
+            </ul>
+        </div>
+    </t>
+</templates>

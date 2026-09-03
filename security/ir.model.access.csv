@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ux_dashboard,ux dashboard,model_biotex_ux_dashboard,base.group_user,1,1,1,1

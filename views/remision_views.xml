@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_remision_form_ux" model="ir.ui.view">
+        <field name="name">biotex.remision.form.ux</field>
+        <field name="model">biotex.remision</field>
+        <field name="inherit_id" ref="biotex_remision.view_remision_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <field name="ux_checklist" widget="biotex_checklist" nolabel="1"/>
+            </xpath>
+            <xpath expr="//page[@name='masks']/div" position="replace">
+                <field name="ux_contract_keys" widget="biotex_contract_keys" nolabel="1" invisible="not contract_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

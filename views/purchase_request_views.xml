@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_request_form_ux" model="ir.ui.view">
+        <field name="name">biotex.purchase.request.form.ux</field>
+        <field name="model">biotex.purchase.request</field>
+        <field name="inherit_id" ref="biotex_purchase_request.view_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <field name="ux_checklist" widget="biotex_checklist" nolabel="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_request_kanban_ux" model="ir.ui.view">
+        <field name="name">biotex.purchase.request.kanban.ux</field>
+        <field name="model">biotex.purchase.request</field>
+        <field name="inherit_id" ref="biotex_purchase_request.view_request_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='card']" position="replace">
+                <t t-name="card">
+                    <div class="ux-kcard">
+                        <div class="ux-kcard__top">
+                            <span class="ux-kcard__folio"><field name="name"/></span>
+                            <field name="priority" widget="priority"/>
+                        </div>
+                        <div class="ux-kcard__meta">
+                            <span><i class="fa fa-map-marker me-1"/><field name="warehouse_id"/></span>
+                            <span t-if="record.contract_id.raw_value"><i class="fa fa-file-text-o me-1"/><field name="contract_id"/></span>
+                            <span t-elif="record.partner_id.raw_value"><i class="fa fa-hospital-o me-1"/><field name="partner_id"/></span>
+                            <span t-else=""><field name="support_type"/></span>
+                        </div>
+                        <field name="progress" widget="progressbar" options="{'editable': false}"/>
+                        <div class="ux-kcard__top">
+                            <span class="ux-kcard__age" t-att-class="{'ux-kcard__age--late': record.date_needed.raw_value and new Date(record.date_needed.raw_value) &lt; new Date() and !['received','cancelled'].includes(record.state.raw_value)}">
+                                <t t-if="record.date_needed.raw_value">Requerida <field name="date_needed"/></t>
+                            </span>
+                            <field name="requester_id" widget="many2one_avatar_user"/>
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </field>
+    </record>
+</odoo>

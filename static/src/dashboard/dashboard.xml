@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="biotex_ux.Dashboard">
+        <div class="ux-dash o_action">
+            <div class="ux-dash__head">
+                <div>
+                    <h3 class="ux-dash__title">Tablero de operación</h3>
+                    <div class="ux-dash__sub" t-if="state.data">Del <t t-esc="state.data.period.since"/> al <t t-esc="state.data.period.until"/> · los cinco indicadores acordados con Dirección</div>
+                </div>
+                <div class="ux-dash__filters">
+                    <select class="form-select form-select-sm" t-on-change="setWarehouse">
+                        <option value="">Todas las delegaciones</option>
+                        <t t-if="state.data"><option t-foreach="state.data.warehouses" t-as="w" t-key="w.id" t-att-value="w.id" t-att-selected="w.id === state.warehouse" t-esc="w.name"/></t>
+                    </select>
+                    <div class="btn-group btn-group-sm">
+                        <button t-foreach="periods" t-as="p" t-key="p.days" class="btn" t-att-class="p.days === state.days ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPeriod(p.days)" t-esc="p.label"/>
+                    </div>
+                </div>
+            </div>
+
+            <div t-if="state.loading and !state.data" class="p-5 text-center text-muted"><i class="fa fa-circle-o-notch fa-spin fa-2x"/></div>
+
+            <t t-if="state.data">
+                <div class="ux-kpis">
+                    <div t-foreach="state.data.kpis" t-as="k" t-key="k.key" class="ux-kpi" t-att-class="kpiClass(k)">
+                        <div class="ux-kpi__label" t-esc="k.label"/>
+                        <div class="ux-kpi__value"><t t-esc="k.value"/><span class="ux-kpi__unit" t-esc="k.unit"/></div>
+                        <div class="ux-kpi__hint" t-esc="k.hint"/>
+                    </div>
+                </div>
+
+                <div class="ux-dash__grid">
+                    <section class="ux-card ux-card--queues">
+                        <h5 class="ux-card__title">Colas de trabajo <small class="text-muted">por rol</small></h5>
+                        <div class="ux-queues">
+                            <button t-foreach="state.data.queues" t-as="q" t-key="q.key" class="ux-queue" t-att-class="{ 'ux-queue--hot': q.count > 0 }" t-on-click="() => this.openQueue(q)">
+                                <span class="ux-queue__count" t-esc="q.count"/>
+                                <span class="ux-queue__label" t-esc="q.label"/>
+                                <span class="ux-queue__role" t-esc="q.role"/>
+                            </button>
+                        </div>
+                    </section>
+                    <section class="ux-card">
+                        <h5 class="ux-card__title">Solicitudes por estado</h5>
+                        <div class="ux-chart"><canvas t-ref="chartState"/></div>
+                    </section>
+                    <section class="ux-card">
+                        <h5 class="ux-card__title">Tiempo solicitud → OC por delegación</h5>
+                        <div class="ux-chart"><canvas t-ref="chartLead"/></div>
+                    </section>
+                    <section class="ux-card">
+                        <h5 class="ux-card__title">Precio pagado vs. promedio histórico <small class="text-muted">6 meses</small></h5>
+                        <div class="ux-chart"><canvas t-ref="chartTrend"/></div>
+                    </section>
+                    <section class="ux-card ux-card--contracts">
+                        <h5 class="ux-card__title">Contratos vigentes <small class="text-muted">avance por monto</small></h5>
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>Contrato</th><th>Institución</th><th>Emite</th><th style="width:30%">Avance</th><th class="text-end">Saldo</th><th class="text-end">Días</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="state.data.contracts" t-as="c" t-key="c.id" role="button" t-on-click="() => this.openContract(c)">
+                                    <td class="fw-bold text-nowrap" t-esc="c.name"/>
+                                    <td class="text-truncate" style="max-width:220px" t-esc="c.partner"/>
+                                    <td><span class="ux-pill ux-pill--info" t-esc="c.company"/></td>
+                                    <td><div class="progress ux-progress"><div class="progress-bar" t-att-class="c.progress >= 85 ? 'bg-warning' : 'bg-success'" t-attf-style="width: {{Math.min(100, c.progress)}}%"><small t-esc="c.progress + '%'"/></div></div></td>
+                                    <td class="text-end tabular" t-esc="c.remaining.toLocaleString('es-MX', { maximumFractionDigits: 0 })"/>
+                                    <td class="text-end tabular" t-att-class="{ 'text-danger fw-bold': c.days_left lte 30 }" t-esc="c.days_left"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

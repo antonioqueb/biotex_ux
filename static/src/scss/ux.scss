@@ -116,7 +116,8 @@
 }
 .ux-card {
     grid-column: span 6; background: var(--ux-surface); border: 1px solid var(--ux-border); border-radius: var(--ux-radius); padding: 12px 14px; min-width: 0;
-    &--queues, &--contracts { grid-column: span 12; }
+    &--queues, &--contracts, &--wide { grid-column: span 12; }
+    &--wide .ux-chart { height: 280px; }
     &__title { font-weight: 600; margin: 0 0 10px; font-size: .95rem; }
     table th { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ux-muted); font-weight: 600; }
     tbody tr[role="button"]:hover td { background: var(--ux-accent-soft); }

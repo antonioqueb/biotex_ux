@@ -49,7 +49,7 @@
                         <h5 class="ux-card__title">Tiempo solicitud → OC por delegación</h5>
                         <div class="ux-chart"><canvas t-ref="chartLead"/></div>
                     </section>
-                    <section class="ux-card">
+                    <section class="ux-card ux-card--wide">
                         <h5 class="ux-card__title">Precio pagado vs. promedio histórico <small class="text-muted">6 meses</small></h5>
                         <div class="ux-chart"><canvas t-ref="chartTrend"/></div>
                     </section>

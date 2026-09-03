@@ -194,16 +194,24 @@ class ProductTemplate(models.Model):
     ux_checklist = fields.Json(compute='_compute_ux_checklist')
 
     @api.depends('categ_id', 'default_code', 'biotex_name', 'biotex_measure', 'biotex_content', 'biotex_brand_id', 'biotex_reference', 'barcode',
-                 'image_1920', 'biotex_image_2', 'biotex_image_3', 'biotex_photo_waived', 'seller_ids', 'biotex_synonym_ids', 'list_price', 'standard_price', 'biotex_equipment_ids')
+                 'image_1920', 'biotex_image_2', 'biotex_image_3', 'biotex_photo_waived', 'seller_ids', 'biotex_synonym_ids', 'list_price', 'standard_price',
+                 'biotex_equipment_ids', 'biotex_classifier_id', 'biotex_generic_id', 'biotex_specialty_ids', 'biotex_group_id')
     def _compute_ux_checklist(self):
         for p in self:
             items = []
             fam_ok = p.categ_id.biotex_level == 'family'
-            items.append(item('family', 'Familia: %s' % p.categ_id.complete_name if fam_ok else 'Sin familia', 'ok' if fam_ok else 'error', '' if fam_ok else 'Use el asistente de clasificación.'))
+            items.append(item('family', 'Grupo %s · familia %s' % (p.biotex_group_id.code, p.categ_id.biotex_composite) if fam_ok else 'Sin familia', 'ok' if fam_ok else 'error', p.categ_id.name if fam_ok else 'Use el asistente de clasificación.'))
+            if fam_ok:
+                if p.biotex_classifier_id:
+                    items.append(item('classifier', 'Clasificador %s (%s)' % (p.biotex_classifier_id.display_name, p.biotex_group_id.classifier_axis or ''), 'ok'))
+                else:
+                    items.append(item('classifier', 'Sin clasificador (%s)' % (p.biotex_group_id.classifier_axis or 'eje del grupo'), 'error', 'La clave no se puede asignar sin clasificador autorizado para la familia.'))
             items.append(item('code', 'Clave %s' % p.default_code if p.default_code else 'Sin clave', 'ok' if p.default_code else 'error', '' if p.default_code else 'Se asigna al clasificar en una familia.'))
             desc_ok = bool(p.biotex_name and p.biotex_measure)
             items.append(item('desc', 'Descripción estructurada (nombre + medida + contenido)', 'ok' if desc_ok else 'error', '' if desc_ok else 'Capture nombre base y medida; el contenido es opcional.'))
-            items.append(item('brand', 'Marca: %s' % p.biotex_brand_id.name if p.biotex_brand_id else 'Sin marca', 'ok' if p.biotex_brand_id else 'error'))
+            items.append(item('brand', 'Marca %s' % p.biotex_brand_id.display_name if p.biotex_brand_id else 'Sin marca', 'ok' if p.biotex_brand_id else 'error'))
+            if p.default_code and p.biotex_generic_id:
+                items.append(item('generic', 'Genérico %s (%d marca(s) equivalentes)' % (p.biotex_generic_id.code, len(p.biotex_generic_id.product_ids)), 'ok'))
             if p.biotex_reference:
                 items.append(item('ref', 'Referencia del fabricante %s' % p.biotex_reference, 'ok'))
             elif p.barcode:
@@ -219,8 +227,12 @@ class ProductTemplate(models.Model):
                 items.append(item('photo', 'Sin foto: la familia la exige', 'error', 'No se marcará completo sin foto.'))
             else:
                 items.append(item('photo', 'Sin foto (opcional en esta familia)', 'info'))
-            if p.categ_id.biotex_code in ('CAB', 'SEN', 'CIR') and not p.biotex_equipment_ids:
-                items.append(item('equip', 'Sin equipo compatible', 'warn', 'Cables, sensores y circuitos deben indicar marca y modelo del equipo.'))
+            if p.biotex_group_id.code == 'CE' and not p.biotex_equipment_ids:
+                items.append(item('equip', 'Sin equipo relacionado', 'warn', 'Un consumible de equipo médico solo funciona conectado a un equipo: indique cuál.'))
+            if p.biotex_group_id.code == 'MT' and not p.biotex_subclass_id:
+                items.append(item('subclass', 'Sin subclase terapéutica', 'warn', 'Indique la subclase (antibiótico, analgésico...) del medicamento.'))
+            if not p.biotex_specialty_ids:
+                items.append(item('spec', 'Sin especialidad clínica', 'info', 'Indique qué servicios consumen el producto (o "Aplica a todas").'))
             items.append(item('supplier', '%d proveedor(es) en ficha' % len(p.seller_ids) if p.seller_ids else 'Sin proveedor en ficha', 'ok' if p.seller_ids else 'warn',
                               '' if p.seller_ids else 'Se completa con la primera compra confirmada.'))
             if not p.biotex_synonym_ids:

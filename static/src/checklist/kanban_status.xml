@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="biotex_ux.KanbanStatus">
+        <div class="d-flex align-items-center gap-1" t-if="items.length">
+            <span class="ux-pill text-truncate" t-att-class="summary.cls" t-att-title="summary.text" style="max-width: 100%;">
+                <i t-att-class="'fa ' + summary.icon"/><span class="text-truncate" t-esc="summary.text"/>
+            </span>
+            <small t-if="extra" class="text-muted" t-esc="extra"/>
+        </div>
+    </t>
+</templates>

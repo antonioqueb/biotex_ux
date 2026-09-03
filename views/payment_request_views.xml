@@ -10,4 +10,39 @@
             </xpath>
         </field>
     </record>
+
+    <record id="view_payment_request_kanban_ux" model="ir.ui.view">
+        <field name="name">biotex.payment.request.kanban.ux</field>
+        <field name="model">biotex.payment.request</field>
+        <field name="inherit_id" ref="biotex_payment_request.view_payment_request_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='priority']" position="after">
+                <field name="date_needed"/>
+                <field name="ux_checklist"/>
+            </xpath>
+            <xpath expr="//t[@t-name='card']" position="replace">
+                <t t-name="card">
+                    <div class="ux-kcard">
+                        <div class="ux-kcard__top">
+                            <span class="ux-kcard__folio"><field name="name"/></span>
+                            <field name="priority" widget="priority"/>
+                        </div>
+                        <div class="fw-bold text-truncate"><field name="partner_id"/></div>
+                        <div class="ux-kcard__meta">
+                            <span><i class="fa fa-shopping-cart me-1"/><field name="purchase_order_id"/></span>
+                            <span><i class="fa fa-map-marker me-1"/><field name="warehouse_id"/></span>
+                        </div>
+                        <field name="ux_checklist" widget="biotex_kanban_status"/>
+                        <div class="ux-kcard__top">
+                            <span class="fs-5 fw-bold tabular"><field name="currency_id" invisible="1"/><field name="amount" widget="monetary"/></span>
+                            <span t-if="record.days_waiting.raw_value > 0" class="ux-pill" t-att-class="record.days_waiting.raw_value > 3 ? 'ux-pill--error' : 'ux-pill--info'">
+                                <t t-esc="record.days_waiting.raw_value"/> días
+                            </span>
+                        </div>
+                        <div class="ux-kcard__age" t-if="record.date_needed.raw_value">Pagar antes del <field name="date_needed"/></div>
+                    </div>
+                </t>
+            </xpath>
+        </field>
+    </record>
 </odoo>

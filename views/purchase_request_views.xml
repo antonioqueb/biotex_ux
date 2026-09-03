@@ -22,6 +22,10 @@
                 <field name="contract_id"/>
                 <field name="partner_id"/>
                 <field name="ux_late"/>
+                <field name="ux_checklist"/>
+                <field name="support_type"/>
+                <field name="progress"/>
+                <field name="requester_id"/>
             </xpath>
             <xpath expr="//t[@t-name='card']" position="replace">
                 <t t-name="card">
@@ -36,6 +40,7 @@
                             <span t-elif="record.partner_id.raw_value"><i class="fa fa-hospital-o me-1"/><field name="partner_id"/></span>
                             <span t-else=""><field name="support_type"/></span>
                         </div>
+                        <field name="ux_checklist" widget="biotex_kanban_status"/>
                         <field name="progress" widget="progressbar" options="{'editable': false}"/>
                         <div class="ux-kcard__top">
                             <span class="ux-kcard__age" t-att-class="{'ux-kcard__age--late': record.ux_late.raw_value}">

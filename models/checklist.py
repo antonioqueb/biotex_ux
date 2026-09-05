@@ -273,7 +273,7 @@ class PurchaseOrder(models.Model):
                 items.append(item('price', 'Precios dentro del promedio histórico', 'ok'))
             cond = po.partner_id.biotex_payment_condition
             if cond == 'cash':
-                pay = {'none': ('Contado: se generará solicitud de pago al confirmar', 'info'), 'pending': ('Contado: pago pendiente en la cola de administración', 'warn'), 'paid': ('Contado: pagada', 'ok')}[po.biotex_payment_state]
+                pay = {'none': ('Contado: se generará solicitud de pago al confirmar', 'info'), 'pending': ('Contado: pago pendiente en la cola de administración', 'warn'), 'partial': ('Contado: pago parcial', 'warn'), 'paid': ('Contado: pagada', 'ok')}[po.biotex_payment_state]
                 items.append(item('pay', pay[0], pay[1]))
             else:
                 items.append(item('pay', 'Crédito: el proveedor surte sin pago previo', 'ok'))
